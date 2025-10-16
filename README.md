@@ -64,12 +64,12 @@ Quick analysys of the DeepFunding trial dataset and a few extra experiments!
 Given any set of weights, we can check how "far away" they are from the Jury preferences expressed in the pairwise comparisons themselves.
 
 - `Brier`: mean squared error between each model's predicted win probability and the ground-truth probability inferred from juror multipliers.
-- `LogLoss`: negative log-likelihood of the observed outcomes using the model probabilities, clipped to avoid infinities.
-- `LogOddsRMSE`: root-mean-square error of the difference between model and ground-truth logits, offering sensitivity to calibration errors in the tails.
-- `Accuracy`: share of pairwise comparisons where the model places more weight on the winning repository (ties count as 0.5).
-- `Coverage`: fraction of comparisons where both repositories receive non-zero weight from the model.
-- `Skill`: relative Brier improvement versus the least-squares baseline, where 0 means parity and 1 denotes a perfect score.
-- `TV Drift`: total variation distance between the model's weight distribution and the inferred ground-truth weights.
+- `LogLoss`: negative log-likelihood of the observed outcomes using the model probabilities, clipped to avoid infinities; depends on multipliers through the same ground-truth probabilities.
+- `LogOddsRMSE`: root-mean-square error of the difference between model and ground-truth logits, offering sensitivity to calibration errors in the tails; uses multipliers when forming those logits.
+- `Accuracy`: share of pairwise comparisons where the model places more weight on the winning repository (ties count as 0.5); leverages only the winner label, so multipliers are ignored.
+- `Coverage`: fraction of comparisons where both repositories receive non-zero weight from the model; ignores multipliers entirely.
+- `Skill`: relative Brier improvement versus the least-squares baseline, where 0 means parity and 1 denotes a perfect score; inherits the multiplier dependence from the Brier calculation.
+- `TV Drift`: total variation distance between the model's weight distribution and the inferred ground-truth weights; uses multipliers when deriving that ground-truth distribution.
 
 ## 📊 Alternative Weight Methods
 
@@ -86,6 +86,14 @@ I've implemented a few alternative weight distribution methods. Each one produce
 | Elo                         | 0.1018  | 0.6505    | 2.5045        | 0.705      | +0.1975 | 0.313      | 1.000    |
 | Huber-log                   | 0.0748  | 0.5893    | 2.2004        | 0.767      | +0.4104 | 0.035      | 1.000    |
 | PageRank                    | 0.1027  | 0.6569    | 2.4879        | 0.685      | +0.1899 | 0.379      | 1.000    |
+
+Multiplier usage:
+- `Least-squares`: fits logits from the log multipliers in the linear least-squares system.
+- `Bradley-Terry` / `Bradley-Terry (regularized)`: use only win/loss outcomes; multipliers are ignored.
+- `Bradley-Terry (intensity)`: weighs each comparison by its multiplier during IRLS.
+- `Elo`: currently applies a constant update rate, so the multipliers have no effect.
+- `Huber-log`: regresses directly on the log multipliers with robust weighting.
+- `PageRank`: adds multiplier-weighted edges from losing to winning repositories.
 
 ## 🤖 Models
 

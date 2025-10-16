@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Deep Funding Trial Data Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f5f7fb;
+      color: #1f2933;
+      line-height: 1.7;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    #content {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 2.75rem 3rem;
+      border-radius: 18px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      font-size: 16px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #101828;
+      font-weight: 600;
+      line-height: 1.2;
+      position: relative;
+      padding-left: 1.75rem;
+    }
+
+    #content>*:first-child {
+      margin-top: 0;
+    }
+
+    #content>*+* {
+      margin-top: 1.6rem;
+    }
+
+    #content h1 {
+      font-size: 2.4rem;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid #e5e9f2;
+      padding-bottom: 1rem;
+    }
+
+    #content h2 {
+      font-size: 1.8rem;
+      margin-top: 2.4rem;
+      margin-bottom: 1rem;
+    }
+
+    #content h3 {
+      font-size: 1.4rem;
+      margin-top: 2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    p {
+      color: #364152;
+    }
+
+    code {
+      background-color: #f5f5f5;
+      border: 1px solid #e4e4e7;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+    }
+
+    pre {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      margin: 1.6rem 0;
+    }
+
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+
+    ul,
+    ol {
+      margin: 1rem 0;
+      padding-left: 1.6rem;
+      color: #364152;
+    }
+
+    li+li {
+      margin-top: 0.4rem;
+    }
+
+    blockquote {
+      border-left: 4px solid #cbd5f5;
+      background-color: #eef3ff;
+      margin: 1.6rem 0;
+      padding: 1rem 1.5rem;
+      color: #2c3a57;
+      border-radius: 12px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1.6rem 0;
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+
+    th,
+    td {
+      border: 1px solid #e5e9f2;
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f8fafc;
+      font-weight: 600;
+      color: #1f2933;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.85rem;
+    }
+
+    .header-anchor {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      opacity: 0;
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+
+    .header-anchor:hover,
+    .header-anchor:focus {
+      color: #2563eb;
+    }
+
+    h1:hover .header-anchor,
+    h2:hover .header-anchor,
+    h3:hover .header-anchor,
+    h4:hover .header-anchor,
+    h5:hover .header-anchor,
+    h6:hover .header-anchor {
+      opacity: 1;
+    }
+
+    hr {
+      margin: 2.5rem 0;
+      border: none;
+      border-top: 1px solid #e5e9f2;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      margin: 2rem 0;
+      border-radius: 14px;
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
+    }
+
+    figure {
+      margin: 2rem 0;
+    }
+
+    figcaption {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 2rem 1rem 3rem;
+      }
+
+      #content {
+        padding: 2rem 1.5rem;
+      }
+
+      #content h1 {
+        font-size: 2rem;
+      }
+
+      #content h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="content"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    fetch('README.md')
+      .then(response => response.text())
+      .then(markdown => {
+        document.getElementById('content').innerHTML = marked.parse(markdown);
+        addHeadingAnchors();
+      });
+
+    function addHeadingAnchors() {
+      const headings = document.querySelectorAll('#content h1, #content h2, #content h3, #content h4, #content h5, #content h6');
+      const usedIds = new Set();
+
+      headings.forEach(heading => {
+        if (heading.querySelector('.header-anchor')) {
+          return;
+        }
+
+        const initial = heading.id?.trim() || slugify(heading.textContent);
+        const baseId = initial || 'section';
+        let candidate = baseId;
+        let suffix = 1;
+
+        while (candidate) {
+          const existing = document.getElementById(candidate);
+          if (!usedIds.has(candidate) && (!existing || existing === heading)) {
+            heading.id = candidate;
+            usedIds.add(candidate);
+            break;
+          }
+          candidate = `${baseId}-${suffix++}`;
+        }
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.className = 'header-anchor';
+        link.setAttribute('aria-label', `Link to ${heading.textContent}`);
+        link.innerText = '#';
+        heading.prepend(link);
+      });
+    }
+
+    function slugify(text) {
+      return text
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    }
+  </script>
+</body>
+
+</html>

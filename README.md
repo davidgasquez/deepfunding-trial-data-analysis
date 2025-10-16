@@ -59,23 +59,39 @@ Quick analysys of the DeepFunding trial dataset and a few extra experiments!
 
 ![Baseline repository weights](figures/baseline-weights.png)
 
+## 📐 Distance Functions
+
+Given any set of weights, we can check how "far away" they are from the Jury preferences expressed in the pairwise comparisons themselves.
+
+- `Brier`: mean squared error between each model's predicted win probability and the ground-truth probability inferred from juror multipliers.
+- `LogLoss`: negative log-likelihood of the observed outcomes using the model probabilities, clipped to avoid infinities.
+- `LogOddsRMSE`: root-mean-square error of the difference between model and ground-truth logits, offering sensitivity to calibration errors in the tails.
+- `Accuracy`: share of pairwise comparisons where the model places more weight on the winning repository (ties count as 0.5).
+- `Coverage`: fraction of comparisons where both repositories receive non-zero weight from the model.
+- `Skill`: relative Brier improvement versus the least-squares baseline, where 0 means parity and 1 denotes a perfect score.
+- `TV Drift`: total variation distance between the model's weight distribution and the inferred ground-truth weights.
+
 ## 📊 Alternative Weight Methods
 
 I've implemented a few alternative weight distribution methods. Each one produces a different allocation.
 
 ![Weight comparison across methods](figures/repo-weights-by-method.png)
 
-- Huber-log continues to lead with Brier 0.0748, LogLoss 0.589, Accuracy 0.767, Skill +0.410, and minimal total variation drift (0.035).
-- Least-squares remains a close second (Brier 0.0755, LogLoss 0.592, Accuracy 0.759, Skill +0.405) with no mass reallocation (total variation 0.000).
-- Bradley-Terry regularised records the highest accuracy at 0.789 but carries total variation 0.323; the intensity-aware flavour stays brittle (Brier 0.1434, LogLoss 1.174, Skill -0.131, total variation 0.679).
-- Elo (Brier 0.1018, LogLoss 0.651, Skill +0.198) and PageRank (Brier 0.1027, LogLoss 0.657, Skill +0.190) remain above the naive baseline yet lag the logistic models.
-
+| Method                      | Brier ↓ | LogLoss ↓ | LogOddsRMSE ↓ | Accuracy ↑ | Skill ↑ | TV Drift ↓ | Coverage |
+| --------------------------- | ------- | --------- | ------------- | ---------- | ------- | ---------- | -------- |
+| Least-squares               | 0.0755  | 0.5918    | 2.1928        | 0.759      | +0.4050 | 0.000      | 1.000    |
+| Bradley-Terry               | 0.0778  | 0.6379    | 2.7657        | 0.788      | +0.3863 | 0.326      | 1.000    |
+| Bradley-Terry (intensity)   | 0.1434  | 1.1744    | 4.2869        | 0.713      | -0.1307 | 0.679      | 1.000    |
+| Bradley-Terry (regularized) | 0.0776  | 0.6141    | 2.3428        | 0.789      | +0.3879 | 0.323      | 1.000    |
+| Elo                         | 0.1018  | 0.6505    | 2.5045        | 0.705      | +0.1975 | 0.313      | 1.000    |
+| Huber-log                   | 0.0748  | 0.5893    | 2.2004        | 0.767      | +0.4104 | 0.035      | 1.000    |
+| PageRank                    | 0.1027  | 0.6569    | 2.4879        | 0.685      | +0.1899 | 0.379      | 1.000    |
 
 ## 🤖 Models
 
-
-
-- Jury baseline (least-squares weights) matches the default formula: Brier 0.0755, LogLoss 0.592, LogOddsRMSE 2.19, Accuracy 0.759, Skill +0.405, and zero total variation drift, giving the calibration target the other models try to beat.
-- Composite ensemble stays closest to the ground-truth signal: Brier 0.0769, LogLoss 0.588, Skill +0.394, Accuracy 0.769, and the shallowest total variation shift (0.229), meaning it reallocates the least weight while still beating the baseline by ~39%.
-- Arbitron trails but remains serviceable with Brier 0.0881, LogLoss 0.625, Skill +0.306, Accuracy 0.747, and a slightly higher weight drift (TV 0.261), signalling decent calibration at the cost of modest re-weighting.
-- Final Seer underperforms: Brier 0.1109, LogLoss 1.548, LogOddsRMSE 6.94, Accuracy 0.727, and TV 0.226 reveal broad coverage yet substantial miscalibration, so it is not competitive without further tuning.
+| Model                         | Brier ↓ | LogLoss ↓ | LogOddsRMSE ↓ | Accuracy ↑ | Skill ↑ | TV Drift ↓ | Coverage |
+| ----------------------------- | ------- | --------- | ------------- | ---------- | ------- | ---------- | -------- |
+| Jury baseline (least-squares) | 0.0755  | 0.5918    | 2.1928        | 0.759      | +0.4050 | 0.000      | 1.000    |
+| Composite ensemble            | 0.0769  | 0.5881    | 2.3134        | 0.769      | +0.3940 | 0.229      | 1.000    |
+| Arbitron                      | 0.0881  | 0.6250    | 2.3765        | 0.747      | +0.3056 | 0.261      | 1.000    |
+| Final Seer                    | 0.1109  | 1.5480    | 6.9411        | 0.727      | +0.1254 | 0.226      | 1.000    |
